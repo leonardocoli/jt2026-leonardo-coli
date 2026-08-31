@@ -37,7 +37,7 @@ D["cards"] = {
     "occ_piso": round(float(0.408), 3),
     "rec_91d_media": round(float(rec["receita_91d_piso"].mean()), 0),
     "rec_91d_mediana": round(float(rec["receita_91d_piso"].median()), 0),
-    "yield_compacto": 0.059,  # mediana compactos op10
+    "rec_anual_mediana": round(float(a["rec_anual_ombro_piso"].median()), 0),
 }
 # centroides por bairro a partir do Mesh (todos os listings) para rotulagem estavel
 bairros_geo = m[m["suburb"].astype(str).str.strip().str.title() != "None"].copy()
@@ -50,14 +50,6 @@ labels_bairro = [
      "lon": round(float(cent.loc[b, "longitude"]), 4), "n": int(contagem[b])}
     for b in cent.index if contagem[b] >= nombre_min
 ]
-
-D["mapa"] = {
-    "lat_min": float(mapa["latitude"].min()), "lat_max": float(mapa["latitude"].max()),
-    "lon_min": float(mapa["longitude"].min()), "lon_max": float(mapa["longitude"].max()),
-    "pontos": mapa[["latitude", "longitude", "bairro", "rec_anual_ombro_piso"]].round(2).values.tolist(),
-    "ctx": [[float(x), float(y)] for x, y in ctx.values],
-    "bairros": labels_bairro,
-}
 
 # --- localizacao por bairro (receita) para substituir o mapa ---
 ba = a[a["rec_anual_ombro_piso"].notna()].copy()
@@ -85,7 +77,10 @@ yc = yc[yc["yield_liq"].notna()].copy()
 yc["cel"] = yc["bairro"] + " " + yc["q"].astype(int).astype(str) + "Q"
 yc["compact"] = yc["q"].isin([0, 1, 2])
 D["yields"] = yc[["cel", "bairro", "q", "n_airbnb", "n_viva", "adr_med", "occ_le15_med",
-                  "preco_med", "rec_an_med", "yield_bruto", "yield_liq", "yield_liq_adm", "compact"]].to_dict("records")
+                  "preco_med", "rec_an_med", "yield_bruto", "yield_liq", "yield_liq_adm",
+                  "compact", "indicativo"]].to_dict("records")
+# card de yield compacto (mediana das celulas 1-2Q, liquido op10) — mesma fonte da tabela §5
+D["cards"]["yield_compacto"] = round(float(yc.loc[yc["compact"], "yield_liq"].median()), 3)
 
 # --- cenarios robustez 06 ---
 c6 = pd.read_csv(OUT / "06_cenarios_yield.csv", encoding=ENC)
@@ -110,7 +105,7 @@ DASH.mkdir(exist_ok=True)
 
 # resumo de diagnostico para conferir
 print("cards:", D["cards"])
-print("mapa pontos:", len(D["mapa"]["pontos"]), "ctx:", len(D["mapa"]["ctx"]))
+print("bairros_receita:", len(D["bairros_receita"]))
 print("yields:", len(D["yields"]))
 print("cenarios06:", len(D["cenarios_06"]), "cenarios07:", len(D["cenarios_07"]))
 print("escrito:", DASH / "data.js")
