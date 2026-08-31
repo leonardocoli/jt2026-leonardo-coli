@@ -260,6 +260,44 @@ O recálculo **muda o ranking dentro do bloco de compactos** (Meia Praia-1Q/2Q s
 
 > **Cuidado:** receita PISO é piso conservador; `*` = indicativo (n 10–29 em algum lado). Yield sensível ao custo operacional (15%) e ao missing de condomínio/IPTU (~30% não reporta). Scatter em `outputs/05_scatter_cross.png`.
 
+### 5.1 Robustez do ranking — cenários de estresse (script `src/06_robustez_cenarios.py`)
+
+> Refeito o yield líquido variando **uma premissa por vez** e depois todas juntas:
+> **A**: ocupação 20% menor (`occ_fwd × 0,8`) · **B**: fator sazonal 0,60 (em vez de 0,77) ·
+> **C**: taxa de administração 20% deduzida · **COMB**: A+B+C.
+
+**Yield líquido por célula e por cenário (%):**
+
+| Célula | status | Base | A (−20% occ) | B (saz 0,60) | C (−20% adm) | COMB |
+|---|---|---|---|---|---|---|
+| **Morretes-2Q** | OK | 5,83 | 4,54 | 4,84 | 4,32 | **2,72** |
+| **Centro-2Q** | OK | 5,52 | 4,29 | 4,57 | 4,08 | 2,56 |
+| Tabuleiro-2Q | IND | 5,52 | 4,29 | 4,57 | 4,07 | 2,54 |
+| Meia Praia-1Q | IND | 5,63 | 4,29 | 4,59 | 4,05 | 2,38 |
+| Meia Praia-2Q | OK | 5,11 | 3,96 | 4,22 | 3,76 | 2,33 |
+| **Centro-1Q** | IND | 4,82 | 3,70 | 3,95 | 3,50 | 2,11 |
+| Centro-3Q | OK | 3,86 | 3,01 | 3,20 | 2,86 | 1,80 |
+| Meia Praia-3Q | OK | 3,88 | 3,01 | 3,21 | 2,86 | 1,78 |
+| Meia Praia-4Q | OK | 2,74 | 2,11 | 2,26 | 2,00 | 1,23 |
+
+**Robustez (mediana do grupo, %):**
+
+| Cenário | Compactos (1–2Q) | Grandes (3–4Q) | Razão |
+|---|---|---|---|
+| Base | 5,5 | 3,9 | 1,43× |
+| A (−20% occ) | 4,3 | 3,0 | 1,42× |
+| B (saz 0,60) | 4,6 | 3,2 | 1,43× |
+| C (−20% adm) | 4,1 | 2,9 | 1,42× |
+| **COMB (A+B+C)** | **2,5** | **1,8** | **1,38×** |
+
+**Linha de conclusão sobre robustez:**
+1. **O bloco dos compactos (1–2Q) se mantém acima de 3Q/4Q em todos os cenários** — a razão fica em ~1,4× mesmo no pior caso combinado (ocupa −20%, sazonalidade 0,60 e −20% de admin simultâneos). O recálculo estressado **não inverte a hierarquia**: nenhum cenário coloca um 3Q/4Q acima de um compacto.
+2. **Topo do ranking é estável:** Morretes-2Q fica em 1º em todos os cenários; Centro-2Q/Tabuleiro-2Q brigam por 2º–3º. Centro-3Q e Meia Praia-3Q só "sobem" quando a admin é deduzida (porque têm preço maior e a receita proporcional cai menos) — mas **continuam abaixo de todos os compactos**.
+3. **Centro-1Q NÃO é o pior compacto em nenhum cenário** — permanece sempre no **6º lugar geral, último do bloco de compactos** mas **acima dos 3Q/4Q**. Em COMB fica 2,11% (Meia Praia-1Q 2,38%, Meia Praia-2Q 2,33%).
+4. **Cenário pessimista combinado ainda é positivo** (2,5% compactos / 1,8% grandes), mas **fina diante de renda fixa (~11%+ Selic)** — reforça que o caso de investimento **depende da valorização do imóvel**, não do yield operacional isolado.
+
+Detail em `outputs/06_cenarios_yield.csv`.
+
 ### 4.2 Anomalias detectadas e tratamentos propostos (diagnóstico — script `src/02_anomalias.py`)
 
 > **Nada foi aplicado aos dados ainda.** Vou esperar aprovação antes de qualquer modificação.
