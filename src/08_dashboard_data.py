@@ -39,12 +39,45 @@ D["cards"] = {
     "rec_91d_mediana": round(float(rec["receita_91d_piso"].median()), 0),
     "yield_compacto": 0.059,  # mediana compactos op10
 }
+# centroides por bairro a partir do Mesh (todos os listings) para rotulagem estavel
+bairros_geo = m[m["suburb"].astype(str).str.strip().str.title() != "None"].copy()
+bairros_geo["bairro"] = bairros_geo["suburb"].astype(str).str.strip().str.title()
+cent = bairros_geo.groupby("bairro")[["latitude", "longitude"]].mean()
+nombre_min = 8  # rotula so bairros com >= 8 listings para nao poluir
+contagem = bairros_geo.groupby("bairro").size()
+labels_bairro = [
+    {"nome": b, "lat": round(float(cent.loc[b, "latitude"]), 4),
+     "lon": round(float(cent.loc[b, "longitude"]), 4), "n": int(contagem[b])}
+    for b in cent.index if contagem[b] >= nombre_min
+]
+
 D["mapa"] = {
     "lat_min": float(mapa["latitude"].min()), "lat_max": float(mapa["latitude"].max()),
     "lon_min": float(mapa["longitude"].min()), "lon_max": float(mapa["longitude"].max()),
     "pontos": mapa[["latitude", "longitude", "bairro", "rec_anual_ombro_piso"]].round(2).values.tolist(),
     "ctx": [[float(x), float(y)] for x, y in ctx.values],
+    "bairros": labels_bairro,
 }
+
+# --- localizacao por bairro (receita) para substituir o mapa ---
+ba = a[a["rec_anual_ombro_piso"].notna()].copy()
+ba_rec = ba.groupby("bairro").agg(
+    n=("airbnb_listing_id", "count"),
+    rec_med=("rec_anual_ombro_piso", "median"),
+    adr_med=("adr", "median"),
+    occ_med=("occ_le15", "median"),
+).reset_index()
+ba_rec = ba_rec[ba_rec["n"] >= 5].copy()
+ba_rec["rec_total"] = ba_rec["n"] * ba_rec["rec_med"]
+ba_rec = ba_rec.sort_values("rec_total", ascending=False)
+D["bairros_receita"] = [
+    {"bairro": r["bairro"], "n": int(r["n"]),
+     "rec_med": round(float(r["rec_med"]), 0),
+     "rec_total": round(float(r["rec_total"]), 0),
+     "adr_med": round(float(r["adr_med"]), 0),
+     "occ_med": round(float(r["occ_med"]), 3)}
+    for _, r in ba_rec.iterrows()
+]
 
 # --- yields por celula bairro x quartos ---
 yc = pd.read_csv(OUT / "05_yield_cross.csv", encoding=ENC)
