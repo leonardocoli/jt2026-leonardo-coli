@@ -1,4 +1,4 @@
-<LINK_DO_VIDEO_NO_GOOGLE_DRIVE_PENDENTE>
+🎥 Vídeo de apresentação (até 3 min): https://drive.google.com/file/d/1C2t6dwuO5qCSe59B0BfMILIwbV0uIWio/view?usp=sharing
 
 # Hackathon Jovens Talentos AI Builder 2026 — Seazone
 
