@@ -1,0 +1,10 @@
+﻿bairro,q,status,n_ab,n_vr,preco,yl,yl_s1,yl_s2,yl_s3,cel
+Morretes,2,OK,43.0,1044.0,790000.0,6.21,6.73,6.83,1.44,Morretes-2Q
+Meia Praia,1,IND,16.0,58.0,877500.0,6.03,,6.67,1.04,Meia Praia-1Q
+Tabuleiro Dos Oliveiras,2,IND,12.0,106.0,781919.5,5.88,7.99,6.47,1.32,Tabuleiro Dos Oliveiras-2Q
+Centro,2,OK,59.0,89.0,1150000.0,5.88,6.46,6.46,1.35,Centro-2Q
+Meia Praia,2,OK,126.0,244.0,1075000.0,5.45,5.61,6.0,1.19,Meia Praia-2Q
+Centro,1,IND,75.0,22.0,890000.0,5.15,7.03,5.68,1.0,Centro-1Q
+Meia Praia,3,OK,284.0,1704.0,1884860.0,4.13,3.79,4.55,0.92,Meia Praia-3Q
+Centro,3,OK,38.0,438.0,2100000.0,4.12,4.13,4.52,0.95,Centro-3Q
+Meia Praia,4,OK,44.0,1408.0,3700000.0,2.92,3.63,3.22,0.61,Meia Praia-4Q

@@ -6,7 +6,8 @@ LIMITACAO-CHAVE: imoveis diferentes nas duas bases (nao ha join por imovel).
 Compra-se "um imovel de Q quartos no bairro B" ao preco mediano VivaReal e opera-se
 short stay a receita mediana PISO anual dos anúncios Airbnb da mesma celula.
 
-Base = RECEITA BRUTA (PISO anual, fator 0.77). Deduz: condominio + IPTU + custo op 15%.
+Base = RECEITA BRUTA (PISO anual, fator 0.77). Deduz: condominio + IPTU + custo op 10%
+(limpeza e pass-through via cleaning_fee, fora da receita; corrige dupla retirada).
 Custo de ADMINISTRACAO (-20% da receita bruta) apenas na SENSIBILIDADE.
 
 Celulas com n<30 em QUALQUER lado = NAO CONCLUSIVAS (yields em branco).
@@ -21,7 +22,9 @@ DATA = Path(__file__).resolve().parents[1] / "data"
 OUT = Path(__file__).resolve().parents[1] / "outputs"
 ENC = "utf-8-sig"
 
-OP_PCT = 0.15      # custo operacional (limpeza/manutencao/vacancia)
+OP_PCT = 0.10      # custo operacional (manutencao/vacancia/overhead) SEM limpeza:
+                   # cleaning_fee e pass-through (fora da receita) -> remover dupla retirada
+                   # (antes 0.15 incluia limpeza enquanto cleaning_fee saia da receita)
 ADM_PCT = 0.20     # administracao - so sensibilidade
 MIN_N = 30         # celula conclusiva
 IND_N = 10         # abaixo disso = NC (nao conclusivo); entre IND e MIN = indicativo
@@ -133,7 +136,7 @@ if len(cross):
 
     print("=" * 100)
     print("YIELD POR (BAIRRO x QUARTOS) - apartamento (recalculado)")
-    print("Base receita BRUTA PISO recalculada; -condominio -IPTU -op15%; -20% adm so sensibilidade")
+    print("Base receita BRUTA PISO recalculada; -condominio -IPTU -op10%; -20% adm so sensibilidade")
     print("n>=30 ambos = concl.; n 10-29 em ambos = indicativo; n<10 ou sem preco = NC")
     print("=" * 100)
     show = cross[["bairro", "q", "n_airbnb", "n_viva", "adr_med", "occ_le15_med",

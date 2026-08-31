@@ -9,7 +9,8 @@ Cenarios:
   C     : taxa de administracao 20% deduzida da receita bruta
   COMB  : A + B + C (tudo junto)
 
-Custos: condominio (mediana >0 x12) + IPTU (mediana >0) + operacional 15% da receita bruta.
+Custos: condominio (mediana >0 x12) + IPTU (mediana >0) + operacional 10% da receita bruta.
+Operacional exclui limpeza: cleaning_fee e pass-through fora da receita (corrige dupla retirada).
 Cenarios A/B/C isolados mantem as demais premissas do base; COMB aplica os tres.
 Saidas: outputs/06_cenarios_yield.csv
 """
@@ -21,7 +22,7 @@ OUT = Path(__file__).resolve().parents[1] / "outputs"
 ENC = "utf-8-sig"
 
 MIN_N, IND_N = 30, 10
-OP_PCT = 0.15
+OP_PCT = 0.10
 H, REST = 91, 274
 F_SAZ_BASE = 0.77
 F_SAZ_PES = 0.60
