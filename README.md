@@ -10,12 +10,17 @@ Desafio oficial: [github.com/seazone-tech/jovens-talentos-2026-hackathon-data](h
 
 ## Como rodar
 
-1. Clone o repositório.
-2. Entre em `src/` e rode os scripts/análise (detalhes por script no próprio arquivo).
+1. **Dashboard (recomendado):** abra `dashboard/index.html` direto no navegador — é **self-contained**
+   (dados embutidos, abre offline, sem servidor). Todos os gráficos e a recomendação numa página.
+2. **Análise completa:** rode os scripts de `src/` em ordem numérica (`01_verificacao_chaves.py` →
+   `02_anomalias.py` → `03_representatividade.py` → `04_receita_ocupacao.py` → `05_yield.py` →
+   `06_robustez_cenarios.py` → `07_cenarios_adversarios.py` → `08_dashboard_data.py`), com Python 3.11+
+   e `pandas` + `matplotlib`.
 3. Cada script lê os CSVs de `data/` e grava resultados/figuras em `outputs/`.
-4. O dashboard interativo está em `dashboard/` (abra no navegador ou com um servidor estático).
+4. **Relatório:** `relatorio.md` — metodologia, premissas enumeradas (P1–P16), cenários de estresse e
+   a recomendação final (§7).
 
-Pré-requisitos: Python 3.11+ e as libs listadas em `src/requirements.txt` (se aplicável).
+Pré-requisitos: Python 3.11+ / `pandas` / `matplotlib` (só para rodar `src/`; o dashboard não precisa).
 
 Requisitos de dados: nenhum download extra — a base já está em `data/` (snapshot oficial do desafio).
 
@@ -26,12 +31,12 @@ Requisitos de dados: nenhum download extra — a base já está em `data/` (snap
 ```
 .
 ├── README.md                 # este arquivo — link do vídeo na 1ª linha
-├── relatorio.md              # análise e recomendação final (inclui posição sobre a tese dos compactos no Centro)
+├── relatorio.md              # análise, premissas e recomendação final (inclui veredito da tese dos compactos)
 ├── data/                     # base oficial do desafio (5 CSVs)
-├── src/                      # scripts/consultas/planilhas de apoio
+├── src/                      # scripts numerados por ordem de execução
 ├── outputs/                  # resultados, tabelas e gráficos gerados
-├── dashboard/                # dashboard interativo da análise
-├── ai-log/                   # conversas com a IA exportadas em texto
+├── dashboard/                # dashboard self-contained (abre offline) — index.html
+├── ai-log/                   # conversas com a IA exportadas em texto (incl. 05-adversarial.md)
 └── index.html                # desafio completo (fonte original)
 ```
 
@@ -39,9 +44,21 @@ Requisitos de dados: nenhum download extra — a base já está em `data/` (snap
 
 ## Onde está a resposta
 
-- **Recomendação final:** [`relatorio.md`](relatorio.md).
-- **Como trabalhei com a IA:** pasta [`ai-log/`](ai-log/) (sessões completas em texto).
-- **Dashboard:** [`dashboard/`](dashboard/).
+- **Recomendação final:** [`relatorio.md`](relatorio.md) §7 — o entregável do desafio.
+- **Veredito da tese dos compactos no Centro:** [`relatorio.md`](relatorio.md) §6.
+- **Robustez / cenários de estresse:** [`relatorio.md`](relatorio.md) §5.1 e §5.2.
+- **Dashboard (gravar o vídeo):** [`dashboard/index.html`](dashboard/index.html) — abre offline.
+- **Sessão adversarial (revisão cética):** [`ai-log/05-adversarial.md`](ai-log/05-adversarial.md).
+
+### Sobre o uso de IA
+
+O trabalho foi feito em parceria com um agente de IA (opencode/Claude Code), com as conversas
+completas exportadas em texto em [`ai-log/`](ai-log/). A IA participou de todas as fases — formulação
+de premissas, scripts numerados, verificação de chaves/anomalias/representatividade, construção de
+receita/ocupação e yield, cenários de estresse, dashboard e redação — sempre com decisão e revisão
+humana a cada etapa. Hígino do processo: uma rodada adversarial (`ai-log/05-adversarial.md`) listou os
+5 ataques mais fortes às premissas e cada um foi corrigido (ex.: dupla retirada do `cleaning_fee`) ou
+registrado como limitação honesta.
 
 ---
 
