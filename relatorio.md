@@ -102,7 +102,80 @@ Horizonte **fixo de ~3 meses a partir da captura**; cada listing lista entre 2 e
 
 ## 4. Principais achados
 
-### 4.1 Anomalias detectadas e tratamentos propostos (diagnóstico — script `src/02_anomalias.py`)
+### 4.1 Ocupação e receita (script `src/04_receita_ocupacao.py`, outputs `outputs/04_*`)
+
+> Decisão metodológica (P2): `Price_AV` só lista datas **disponíveis**; ausente = indisponível.
+
+#### Ocupação por faixa de lead (captura 20/01, base 780)
+
+| Lead | Disponíveis/Total | Ocupação |
+|---|---|---|
+| 0–15 | 2.906/12.480 | **0,767** |
+| 16–30 | 5.132/11.700 | 0,561 |
+| 31–45 | 7.362/11.700 | 0,371 |
+| 46–60 | 8.198/11.700 | 0,299 |
+| 61–75 | 9.455/11.700 | 0,192 |
+| 76–90 | 8.970/11.700 | 0,233 |
+
+- **Alta temporada realizada (lead ≤15): 0,767** — é medida de **alta** (datas próximas da captura, 20/01→04/02), não da média do horizonte.
+- **Sensibilidade (lead ≤30): 0,668.**
+- **Estabilização:** queda monótona até 0,19 (61–75). O **repique em 76–90 (+0,04) é a Semana Santa (06–20/04)**, não estabilização — anotado no console e figura.
+- **Ocupação por listing (lead ≤15):** dos 780, **308 não listam datas no lead curto** (presumivelmente ocupados/bloqueados/full) → tratados como **1,0**. Com isso: **média 0,767, mediana 0,875** (n=780).
+- **Piso da ocupação média dos 91 dias:** **0,408** (forward ponderado por bucket, excluindo o repique de feriado). Alta (lead≤15) 0,767 mantida em paralelo.
+
+#### Ritmo de reserva — E2 (07/01→20/01, janela comparável [20/01,07/04], base 654)
+
+- Datas expostas méd. 49,5/listing; **somem 6,38** em 13 dias (12,9% do exposto); aparecem 1,31 → líquido +5,06.
+- **35,5% dos listings sem nenhuma data somando** (heterogeneidade).
+- Curva de lead de reserva: pico em **lead 15–44 dias** (1.260 + 1.069 somem), pouco em 0–14 (173).
+- **Ritmo = 0,0099 datas/(listing·dia exposto)** — usado como pacing/validação, **sem** extrapolação constante para nível.
+
+#### ADR: vendido × disponível (P13)
+
+| | n | ADR médio | Mediana |
+|---|---|---|---|
+| Disponíveis (sobraram) | 654 | 663,3 | 593,7 |
+| **Vendidas (somem)** | 422 | **724,5** | 689,2 |
+
+Noites vendidas ~9% mais caras que as disponíveis → reserva-se em datas premium; usar apenas o disponível subestima o ADR de venda.
+
+#### Receita dos 91 dias (métrica principal) e anualização ilustrativa
+
+| Cenário | Ocupação | Receita 91d média | mediana | Anual ilustrativa (média) |
+|---|---|---|---|---|
+| **Piso** | forward 0,408 | **R$ 24.260** | R$ 21.155 | R$ 92.707 – R$ 113.217 |
+| **Teto** | lead≤15 0,767 | R$ 43.532 | R$ 38.668 | R$ 172.243 – R$ 210.811 |
+
+- **Métrica principal = receita observada dos 91 dias**; anualização é **faixa ilustrativa** (sem fatores inventados).
+- **Sazonalidade = só ADR por mês** (jan 828 → fev 763 → mar 652 → abr 573). Alta (jan–fev) = 796; ombro (mar–abr) = 612 → **fator do restante do ano = 0,77**, **uniforme para todos os segmentos** → o ranking independe dele.
+- **Limitação:** ocupação por mês NÃO é isolada (ombro confunde com lead) — não a usamos mensalmente.
+
+#### Receita 91d (piso) por segmento — n explícito
+
+**Bairro (n≥30):**
+
+| Bairro | n | Média | Mediana |
+|---|---|---|---|
+| Meia Praia | 483 | 24.916 | 22.572 |
+| Centro | 180 | 21.884 | 19.836 |
+| Morretes | 66 | 25.478 | 18.846 |
+
+**Tipo:** apartamento (n=737) 24.100 / 21.262 · casa (n=33) 31.298 / 19.203 · outros (n≤30, não conclusivo).
+
+**Quartos (0–4Q; 5Q+ não conclusivo por n<30):**
+
+| Quartos | n | Média | Mediana |
+|---|---|---|---|
+| 0 (estúdio) | 7 | 16.428 | 16.081 |
+| 1 | 110 | 16.787 | 16.508 |
+| 2 | 262 | 20.144 | 17.876 |
+| 3 | 340 | 26.296 | 25.845 |
+| 4 | 53 | 42.950 | 37.108 |
+| 5+ | <30 | — | — (não conclusivo) |
+
+**Outliers:** não excluídos; 5Q+ reportados à parte como não conclusivos.
+
+### 4.2 Anomalias detectadas e tratamentos propostos (diagnóstico — script `src/02_anomalias.py`)
 
 > **Nada foi aplicado aos dados ainda.** Vou esperar aprovação antes de qualquer modificação.
 
