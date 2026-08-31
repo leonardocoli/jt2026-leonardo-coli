@@ -175,6 +175,91 @@ Noites vendidas ~9% mais caras que as disponíveis → reserva-se em datas premi
 
 **Outliers:** não excluídos; 5Q+ reportados à parte como não conclusivos.
 
+## 5. Investimento: yield por segmento (Airbnb × VivaReal — script `src/05_yield.py`)
+
+> **Limitação crítica:** as duas bases são de **imóveis diferentes** — não há join por imóvel.
+> O yield é de **perfil médio**: compra-se "um imóvel de Q quartos no bairro B" ao preço mediano
+> do VivaReal e opera-se short stay à receita mediana PISO dos anúncios Airbnb da mesma célula.
+
+**Premissas do yield:**
+- **Base = receita BRUTA** (`rec_anual_ombro_piso`, PISO anualizada, fator 0,77 derivado) — coluna `receita anual` na tabela para auditar o yield.
+- **Deduções:** condomínio (mediana só entre reportados >0, ×12) + IPTU (mediana real >0) + **custo operacional 15%** da receita bruta (limpeza/manutenção/vacância).
+- **Administração (−20% da receita bruta):** apenas na coluna de sensibilidade `yield_liq_adm`.
+- **n≥30 em ambos os lados = conclusiva; n entre 10–29 em ambos = indicativo (marcado `*`); n<10 ou sem preço = NC.**
+- **0Q (studio) incluído** na tabela; só apartamentos (oferta e compra).
+
+### Yield por **bairro × quartos** (apartamento; ADR/ocupação por célula; `*` = indicativo)
+
+> **Receita recalculada por célula (fórmula final):**
+> `receita_91d = ADR_célula × 91 × (0,408 × occ_le15_célula ÷ occ_le15_global)` com `occ_le15_global = 0,776`
+> **Anual = receita_91d + ADR_célula × 0,77 × 274 × occ_forward_célula** — o fator sazonal **escala o ADR da célula**, não o substitui.
+
+| Bairro | Q | n_ab | n_vr | ADR (med) | Ocup. alta | Receita anual bruta | Preço mediano | R$/m² | **Bruto** | **Líquido** | Líq. −20% adm |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Centro | 0 | 0 | 0 | — | — | — | — | — | NC | NC | NC |
+| Centro | 1 | 75 | 22 | 455 | 0,81 | 58.679 | 890 mil | 14.574 | 6,59%* | 4,82%* | 3,50%* |
+| Centro | 2 | 59 | 89 | 643 | 0,81 | 82.877 | 1,15 mi | 13.068 | 7,21% | 5,52% | 4,08% |
+| Centro | 3 | 38 | 438 | 735 | 0,91 | 105.705 | 2,10 mi | 15.789 | 5,03% | 3,86% | 2,86% |
+| Centro | 4 | 1 | 436 | 629 | 1,00 | — | 3,90 mi | 18.890 | NC | NC | NC |
+| Meia Praia | 1 | 16 | 58 | 484 | 0,91 | 69.613 | 877 mil | 21.250 | 7,93%* | 5,63%* | 4,23%* |
+| Meia Praia | 2 | 126 | 244 | 474 | 0,97 | 72.873 | 1,08 mi | 12.929 | 6,78% | 5,11% | 3,87% |
+| Meia Praia | 3 | 284 | 1.704 | 693 | 0,88 | 96.213 | 1,88 mi | 14.957 | 5,10% | 3,88% | 2,87% |
+| Meia Praia | 4 | 44 | 1.408 | 980 | 0,88 | 136.136 | 3,70 mi | 18.617 | 3,68% | 2,74% | 2,01% |
+| **Morretes** | **2** | 43 | 1.044 | 465 | 0,81 | 59.986 | 790 mil | 11.551 | 7,59% | **5,83%** | **4,27%** |
+| Tabuleiro dos Oliveiras | 2 | 12 | 106 | 440 | 0,81 | 56.726 | 782 mil | 11.502 | 7,25% | 5,52% | 4,08% |
+
+> Ocupação = `occ_le15` (alta temporada realizada, lead≤15; zero datas no lead curto = 1,0). Outras células (Casa Branca, Canto da Praia, Ilhota, Alto São Bento) têm n<10 no lado Airbnb → NC (detalhe em `outputs/05_yield_cross.csv`).
+
+**Sobre o ADR × nº de quartos (confirmação):** **o ADR varia sim com quartos** — mediana global (apartamentos): 1Q 456 → 2Q 489 → 3Q 696 → 4Q 964. O que é verdadeiro é que **1Q e 2Q têm ADR próximos** (456 vs 489, +7%) apesar de preços de compra bem diferentes por localização. A "receita quase igual entre 1Q/2Q" vem de ADR 1Q≈2Q e ocupação semelhante. Não é artefato.
+
+**Leitura (por célula, sem confundir composição com localização):**
+- **Top 5 é quase um empate técnico:** Morretes-2Q (5,83%), Meia Praia-1Q (5,63%), Tabuleiro-2Q (5,52%), Centro-2Q (5,52%), Meia Praia-2Q (5,11%) — **5,11–5,83% líquido, spread de 0,7 p.p.**, dentro do ruído → ranking posicional pouco informativo; o que separa é o grupo (compactos 1Q/2Q) vs 3Q/4Q.
+- **3Q derruba para 3,9–4,1%** e **4Q para ~2,7%** — preço sobe mais que a receita.
+- **Centro-1Q (indicativo, n_vr=22): 4,82%** — **não é o pior compacto**, mas tem ADR baixo (455) que o fator 0,77 penaliza. Compete no bloco dos compactos, porém com **só ~22 unidades à venda no bairro → não escala para portfolio**.
+
+#### Mudanças de posição após o recálculo da receita (ranking do yield líquido)
+
+**ANTES** (ADR-driven, ocupação fixa 0,408): Morretes-2Q → Tab-2Q → Centro-1Q → Meia Praia-1Q → Centro-2Q → Meia Praia-2Q → ...
+
+**DEPOIS** (ocupação por célula + fator sazonal que escala o ADR da célula):
+
+| Célula | occ alta | Rec. ant. | Rec. nova | yl ant | yl dep | rank ant→dep |
+|---|---|---|---|---|---|---|
+| Morretes-2Q | 0,81 | 85.720 | 59.986 | 8,60% | 5,83% | 1 → 1 (=) |
+| **Meia Praia-1Q** | 0,91 | 86.418 | 69.613 | 7,26% | 5,63% | 4 → **2** ⬆ |
+| **Tabuleiro-2Q** | 0,81 | 84.781 | 56.726 | 8,57% | 5,52% | 2 → **3** ⬇ |
+| **Centro-2Q** | 0,81 | 92.311 | 82.877 | 6,21% | 5,52% | 5 → **4** ⬆ |
+| **Meia Praia-2Q** | 0,97 | 86.046 | 72.873 | 6,15% | 5,11% | 6 → **5** ⬆ |
+| **Centro-1Q** | 0,81 | 85.343 | 58.679 | 7,36% | 4,82% | 3 → **6** ⬇ |
+| Meia Praia-3Q | 0,88 | 94.172 | 96.213 | 3,79% | 3,88% | 7 → 7 (=) |
+| Centro-3Q | 0,91 | 95.736 | 105.705 | 3,46% | 3,86% | 8 → 8 (=) |
+| Meia Praia-4Q | 0,88 | 104.847 | 136.136 | 2,02% | 2,74% | 9 → 9 (=) |
+
+O recálculo **muda o ranking dentro do bloco de compactos** (Meia Praia-1Q/2Q sobem; Centro-1Q e Tabuleiro caem — ADR baixo é penalizado pelo fator 0,77), mas **não muda a hierarquia estrutural**: compactos ≫ 3Q ≫ 4Q.
+
+#### Tese e contexto do investimento
+
+- **Compactos: SIM.** 1Q/2Q entregam **~2× o yield** dos 3Q/4Q (5,1–5,8% vs 2,7–3,9% líquido). A tese de "apostar em compactos" é **sustentada pelos dados**.
+- **Centro:** **não é o pior compacto** — 4,82% (Centro-1Q) no meio do bloco. Mas **só ~22 unidades 1Q à venda no Centro** → **não escala para portfolio**. Morretes-2Q/Meia Praia-2Q têm oferta ampla no lado da compra (n_vr 1.044 / 244) e yield similar superior.
+- **Yield líquido ~5,8% a.a. vs custo de capital:** a renda fixa no Brasil (Selic ~11–13% bruta) oferece retorno nominal superior; o caso de investimento em short stay **depende da valorização do imóvel** somada à operação — não se sustenta apenas pela renda operacional no cenário atual.
+- **Taxa operacional da Seazone:** **premissa a validar** (não inventada). Nossa base usa custo operacional de 15% da receita (limpeza/manutenção/vacância). Se a Seazone cobra administração (tipicamente +15–25%), a coluna `−20% adm` (sensibilidade) mostra o efeito e o caso ficaria mais frágil.
+
+#### Por que Morretes-2Q é ~27% mais barato que Meia Praia-2Q (mesma tipologia)?
+
+| | Morretes-2Q | Meia Praia-2Q |
+|---|---|---|
+| Preço mediano | 790 mil | 1,08 mi (−27%) |
+| Área mediana | 69 m² | 85 m² (−19%) |
+| R$/m² | 11.551 | 12.929 (−11%) |
+| Condomínio mediano | 350 | 500 |
+| Vagas de garagem (média) | 1,06 | 1,48 |
+
+- **Metade da diferença é área:** em Meia Praia o 2Q é tipicamente ~85 m²; em Morretes ~69 m².
+- **A outra metade é o distrito:** Meia Praia é a **orla** (frente-mar, calçadão, uso de lazer consolidado) → prêmio de ~11% no R$/m²; Morretes é bairro residencial de **segunda linha** (acima da BR-101, mais afastado da areia), com menos garagem/infra de beachfront.
+- **Receita quase igual** (~86 mil nos dois): a demanda short-stay premia o preço baixo de Morretes, não penaliza a receita → yield alto.
+
+> **Cuidado:** receita PISO é piso conservador; `*` = indicativo (n 10–29 em algum lado). Yield sensível ao custo operacional (15%) e ao missing de condomínio/IPTU (~30% não reporta). Scatter em `outputs/05_scatter_cross.png`.
+
 ### 4.2 Anomalias detectadas e tratamentos propostos (diagnóstico — script `src/02_anomalias.py`)
 
 > **Nada foi aplicado aos dados ainda.** Vou esperar aprovação antes de qualquer modificação.
@@ -220,16 +305,16 @@ Noites vendidas ~9% mais caras que as disponíveis → reserva-se em datas premi
 
 **Decisão estrutural derivada:** usar **`Mesh` como fonte oficial de coords/bairro** e **`Price_AV` apenas para os 999 listings com preço** na análise de receita. Recomendações sobre outliers serão implementadas só após aprovação.
 
-## 5. Posição sobre a tese dos compactos no Centro
+## 6. Posição sobre a tese dos compactos no Centro
 
 **Pendente.** Os dados sustentam ou refutam a tese de que apartamentos compactos
 (studio/1 quarto) no Centro seriam a aposta mais eficiente?
 
-## 6. Recomendação final
+## 7. Recomendação final
 
 _Pendente — resumo defensável da decisão de investimento._
 
-## 7. O que faria com mais uma semana
+## 8. O que faria com mais uma semana
 
 _Pendente._
 
