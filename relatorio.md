@@ -291,9 +291,9 @@ O recálculo **muda o ranking dentro do bloco de compactos** (Meia Praia-1Q/2Q s
 | **COMB (A+B+C)** | **2,5** | **1,8** | **1,38×** |
 
 **Linha de conclusão sobre robustez:**
-1. **O bloco dos compactos (1–2Q) se mantém acima de 3Q/4Q em todos os cenários** — a razão fica em ~1,4× mesmo no pior caso combinado (ocupa −20%, sazonalidade 0,60 e −20% de admin simultâneos). O recálculo estressado **não inverte a hierarquia**: nenhum cenário coloca um 3Q/4Q acima de um compacto.
+1. **O bloco dos compactos (1–2Q) se mantém acima de 3Q/4Q em todos os cenários** — a razão fica em ~1,4× mesmo no pior caso combinado (ocupa −20%, sazonalidade 0,60 e −20% de admin simultâneos). **Esse 1,4× é compactos vs média de grandes (3Q+4Q juntos)**; contra **4Q isolado** a vantagem sobe para **~2×** (ex.: Base 5,5% vs 2,74% → 2,0×; COMB 2,5% vs 1,23% → 2,0×). O recálculo estressado **não inverte a hierarquia**: nenhum cenário coloca um 3Q/4Q acima de um compacto.
 2. **Topo do ranking é estável:** Morretes-2Q fica em 1º em todos os cenários; Centro-2Q/Tabuleiro-2Q brigam por 2º–3º. Centro-3Q e Meia Praia-3Q só "sobem" quando a admin é deduzida (porque têm preço maior e a receita proporcional cai menos) — mas **continuam abaixo de todos os compactos**.
-3. **Centro-1Q NÃO é o pior compacto em nenhum cenário** — permanece sempre no **6º lugar geral, último do bloco de compactos** mas **acima dos 3Q/4Q**. Em COMB fica 2,11% (Meia Praia-1Q 2,38%, Meia Praia-2Q 2,33%).
+3. **Centro-1Q é o mais fraco do bloco de compactos (6º geral)** — mas **permanece acima de todos os 3Q/4Q em todos os cenários**. Em COMB fica 2,11% (vs Meia Praia-1Q 2,38%, Meia Praia-2Q 2,33% do mesmo bloco, e 1,23–1,80% dos 3Q/4Q).
 4. **Cenário pessimista combinado ainda é positivo** (2,5% compactos / 1,8% grandes), mas **fina diante de renda fixa (~11%+ Selic)** — reforça que o caso de investimento **depende da valorização do imóvel**, não do yield operacional isolado.
 
 Detail em `outputs/06_cenarios_yield.csv`.
