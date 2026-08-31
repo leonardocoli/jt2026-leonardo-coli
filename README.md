@@ -1,27 +1,53 @@
+<LINK_DO_VIDEO_NO_GOOGLE_DRIVE_PENDENTE>
+
 # Hackathon Jovens Talentos AI Builder 2026 — Seazone
 
-## 👉 Leia o desafio aqui
+**Entrega:** Leonardo Coli · fork de `seazone-tech/jovens-talentos-2026-hackathon-data`, renomeado para `jt2026-leonardo-coli`.
 
-### **[ABRIR O DESAFIO COMPLETO](https://seazone-tech.github.io/jovens-talentos-2026-hackathon-data/)**
-
-Lá está tudo: a missão, os dados, **o que entregar**, as regras, o prazo e **como vamos avaliar**.
-Leia antes de começar a mexer nos dados.
-
-> Se o link acima não abrir, o mesmo conteúdo está no arquivo [`index.html`](index.html) deste repositório
-> (baixe e abra no navegador).
+Desafio oficial: [github.com/seazone-tech/jovens-talentos-2026-hackathon-data](https://github.com/seazone-tech/jovens-talentos-2026-hackathon-data)
 
 ---
 
-## Primeiro passo
+## Como rodar
 
-**Faça um _fork_ deste repositório.** É nele que você vai trabalhar e é ele que você entrega.
+1. Clone o repositório.
+2. Entre em `src/` e rode os scripts/análise (detalhes por script no próprio arquivo).
+3. Cada script lê os CSVs de `data/` e grava resultados/figuras em `outputs/`.
+4. O dashboard interativo está em `dashboard/` (abra no navegador ou com um servidor estático).
+
+Pré-requisitos: Python 3.11+ e as libs listadas em `src/requirements.txt` (se aplicável).
+
+Requisitos de dados: nenhum download extra — a base já está em `data/` (snapshot oficial do desafio).
+
+---
+
+## Estrutura
+
+```
+.
+├── README.md                 # este arquivo — link do vídeo na 1ª linha
+├── relatorio.md              # análise e recomendação final (inclui posição sobre a tese dos compactos no Centro)
+├── data/                     # base oficial do desafio (5 CSVs)
+├── src/                      # scripts/consultas/planilhas de apoio
+├── outputs/                  # resultados, tabelas e gráficos gerados
+├── dashboard/                # dashboard interativo da análise
+├── ai-log/                   # conversas com a IA exportadas em texto
+└── index.html                # desafio completo (fonte original)
+```
+
+---
+
+## Onde está a resposta
+
+- **Recomendação final:** [`relatorio.md`](relatorio.md).
+- **Como trabalhei com a IA:** pasta [`ai-log/`](ai-log/) (sessões completas em texto).
+- **Dashboard:** [`dashboard/`](dashboard/).
 
 ---
 
 ## Os dados (`data/`)
 
 Snapshot estático do mercado imobiliário de **Itapema (SC)**, com anúncios de Airbnb e de venda (VivaReal).
-É a mesma base para todos os candidatos, para garantir comparação justa.
 
 | Arquivo | O que tem | Como conecta |
 |---|---|---|
@@ -33,15 +59,11 @@ Snapshot estático do mercado imobiliário de **Itapema (SC)**, com anúncios de
 
 ---
 
-## Resumo do que você entrega
+## Regras de avaliação (resumo)
 
-1. **Este repositório, forkado e público**, com a sua análise, o `README.md` explicando como rodar,
-   a pasta `ai-log/` (conversas com a IA **em texto**) e a recomendação final escrita.
-2. **Vídeo de até 3 minutos** no Google Drive, com o link na primeira linha do seu README.
+- Repositório **público** (manter até 15/09).
+- Recomendação embasada nos dados + posição sobre a tese dos compactos no Centro.
+- `ai-log/` com as conversas com a IA em texto (sessão inteira).
+- Vídeo de até 3 minutos no Google Drive, sem restrição de acesso.
 
-O detalhe de cada item, o prazo e o formulário de entrega estão no
-**[desafio completo](https://seazone-tech.github.io/jovens-talentos-2026-hackathon-data/)**.
-
----
-
-*Seazone — Jovens Talentos AI Builder 2026*
+Mais detalhes no [desafio completo](https://seazone-tech.github.io/jovens-talentos-2026-hackathon-data/) ou no [`index.html`](index.html).
